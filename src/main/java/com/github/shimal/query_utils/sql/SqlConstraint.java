@@ -1,5 +1,5 @@
 
-package com.github.shimal.query_utils.hql;
+package com.github.shimal.query_utils.sql;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -7,7 +7,7 @@ import java.util.List;
 
 
 
-public class HqlConstraint implements HqlConstrainable {
+public class SqlConstraint implements SqlConstrainable {
 
 
 
@@ -26,7 +26,7 @@ public class HqlConstraint implements HqlConstrainable {
 
     //~ --- [INSTANCE FIELDS] ------------------------------------------------------------------------------------------
 
-    private List<HqlConstrainable> constrainables;
+    private List<SqlConstrainable> constrainables;
     private String                 leftSide;
     private int                    operator;
     private String                 rightSide;
@@ -35,18 +35,18 @@ public class HqlConstraint implements HqlConstrainable {
 
     //~ --- [CONSTRUCTORS] ---------------------------------------------------------------------------------------------
 
-    public HqlConstraint(Object leftSide, Object rightSide) {
+    public SqlConstraint(Object leftSide, Object rightSide) {
 
         this(leftSide, rightSide, EQUAL);
     }
 
 
 
-    public HqlConstraint(Object leftSide, Object rightSide, int operator) {
+    public SqlConstraint(Object leftSide, Object rightSide, int operator) {
 
         this.leftSide       = leftSide.toString();
         this.rightSide      = rightSide.toString();
-        this.constrainables = new ArrayList<HqlConstrainable>();
+        this.constrainables = new ArrayList<SqlConstrainable>();
         this.operator       = operator;
     }
 
@@ -55,7 +55,7 @@ public class HqlConstraint implements HqlConstrainable {
     //~ --- [METHODS] --------------------------------------------------------------------------------------------------
 
     @Override
-    public void add(HqlConstrainable constrainable) {
+    public void add(SqlConstrainable constrainable) {
 
     }
 
@@ -64,7 +64,7 @@ public class HqlConstraint implements HqlConstrainable {
     //~ ----------------------------------------------------------------------------------------------------------------
 
     @Override
-    public Iterator<HqlConstrainable> getIterator() {
+    public Iterator<SqlConstrainable> getIterator() {
 
         return constrainables.iterator();
     }

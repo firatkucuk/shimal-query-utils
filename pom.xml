@@ -7,7 +7,7 @@
   <artifactId>shimal-query-utils</artifactId>
   <name>shimal-query-utils</name>
   <modelVersion>4.0.0</modelVersion>
-  <version>1.6</version>
+  <version>1.7</version>
   <packaging>jar</packaging>
 
   <properties>
@@ -29,7 +29,14 @@
     </repository>
   </repositories>
 
-  <dependencies />
+  <dependencies >
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.10</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>

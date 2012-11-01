@@ -1,8 +1,8 @@
 
-package com.github.shimal.query_utils.hql;
+package com.github.shimal.query_utils.sql;
 
 
-public class HqlOrder {
+public class SqlOrder {
 
 
 
@@ -15,7 +15,7 @@ public class HqlOrder {
 
     //~ --- [CONSTRUCTORS] ---------------------------------------------------------------------------------------------
 
-    public HqlOrder(String column, int method) {
+    public SqlOrder(String column, int method) {
 
         this.column = column;
         this.method = method;

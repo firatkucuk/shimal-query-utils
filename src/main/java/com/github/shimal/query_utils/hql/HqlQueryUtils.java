@@ -37,7 +37,25 @@ public class HqlQueryUtils {
 
     public static HqlConstrainable and(Object leftSide, Object rightSide) {
 
-        return new HqlAnd(new HqlConstraint(leftSide.toString(), rightSide.toString()));
+        return new HqlAnd(new HqlConstraint(leftSide, rightSide));
+    }
+
+
+
+    //~ ----------------------------------------------------------------------------------------------------------------
+
+    public static HqlOrder asc(String column) {
+
+        return new HqlOrder(column, HqlQuery.ORDER_ASCENDING);
+    }
+
+
+
+    //~ ----------------------------------------------------------------------------------------------------------------
+
+    public static HqlOrder desc(String column) {
+
+        return new HqlOrder(column, HqlQuery.ORDER_DESCENDING);
     }
 
 
@@ -46,7 +64,7 @@ public class HqlQueryUtils {
 
     public static HqlConstrainable eq(Object leftSide, Object rightSide) {
 
-        return new HqlConstraint(leftSide.toString(), rightSide.toString());
+        return new HqlConstraint(leftSide, rightSide);
     }
 
 
@@ -55,7 +73,7 @@ public class HqlQueryUtils {
 
     public static HqlConstrainable gt(Object leftSide, Object rightSide) {
 
-        return new HqlConstraint(leftSide.toString(), rightSide.toString(), HqlConstraint.GREATER_THAN);
+        return new HqlConstraint(leftSide, rightSide, HqlConstraint.GREATER_THAN);
     }
 
 
@@ -64,7 +82,7 @@ public class HqlQueryUtils {
 
     public static HqlConstrainable gte(Object leftSide, Object rightSide) {
 
-        return new HqlConstraint(leftSide.toString(), rightSide.toString(), HqlConstraint.GREATER_THAN_OR_EQUAL);
+        return new HqlConstraint(leftSide, rightSide, HqlConstraint.GREATER_THAN_OR_EQUAL);
     }
 
 
@@ -73,7 +91,16 @@ public class HqlQueryUtils {
 
     public static HqlConstrainable like(Object leftSide, Object rightSide) {
 
-        return new HqlConstraint(leftSide.toString(), rightSide.toString(), HqlConstraint.LIKE);
+        return new HqlConstraint(leftSide, rightSide, HqlConstraint.LIKE);
+    }
+
+
+
+    //~ ----------------------------------------------------------------------------------------------------------------
+
+    public static HqlConstrainable likeLower(Object leftSide, Object rightSide) {
+
+        return new HqlConstraint(leftSide, rightSide, HqlConstraint.LIKE_LOWER);
     }
 
 
@@ -82,7 +109,7 @@ public class HqlQueryUtils {
 
     public static HqlConstrainable lt(Object leftSide, Object rightSide) {
 
-        return new HqlConstraint(leftSide.toString(), rightSide.toString(), HqlConstraint.LESS_THAN);
+        return new HqlConstraint(leftSide, rightSide, HqlConstraint.LESS_THAN);
     }
 
 
@@ -91,7 +118,7 @@ public class HqlQueryUtils {
 
     public static HqlConstrainable lte(Object leftSide, Object rightSide) {
 
-        return new HqlConstraint(leftSide.toString(), rightSide.toString(), HqlConstraint.LESS_THAN_OR_EQUAL);
+        return new HqlConstraint(leftSide, rightSide, HqlConstraint.LESS_THAN_OR_EQUAL);
     }
 
 
@@ -100,7 +127,7 @@ public class HqlQueryUtils {
 
     public static HqlConstrainable ne(Object leftSide, Object rightSide) {
 
-        return new HqlConstraint(leftSide.toString(), rightSide.toString(), HqlConstraint.NOT_EQUAL);
+        return new HqlConstraint(leftSide, rightSide, HqlConstraint.NOT_EQUAL);
     }
 
 
@@ -136,7 +163,7 @@ public class HqlQueryUtils {
 
     public static HqlConstrainable or(Object leftSide, Object rightSide) {
 
-        return new HqlOr(new HqlConstraint(leftSide.toString(), rightSide.toString()));
+        return new HqlOr(new HqlConstraint(leftSide, rightSide));
     }
 
 

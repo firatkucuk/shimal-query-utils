@@ -1,5 +1,5 @@
 
-package com.github.shimal.query_utils.hql;
+package com.github.shimal.query_utils.sql;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,7 +9,7 @@ import java.util.List;
 
 
 
-public class HqlQuery {
+public class SqlQuery {
 
 
 
@@ -23,41 +23,40 @@ public class HqlQuery {
     //~ --- [INSTANCE FIELDS] ------------------------------------------------------------------------------------------
 
     private String                  countParam;
-    private HashMap<String, String> entities;
-    private List<HqlOrder>          orders;
+    private List<SqlOrder>          orders;
     private String                  selectParam;
-    private HqlConstrainable        topConstrainable;
+    private HashMap<String, String> tables;
+    private SqlConstrainable        topConstrainable;
 
 
 
     //~ --- [CONSTRUCTORS] ---------------------------------------------------------------------------------------------
 
-    public HqlQuery(Class entity) {
+    public SqlQuery(String table) {
 
-        this(entity, "s");
+        this(table, "S");
     }
 
 
 
-    public HqlQuery(Class entity, String alias) {
+    public SqlQuery(String table, String alias) {
 
-        entities         = new HashMap<String, String>();
-        orders           = new ArrayList<HqlOrder>();
-        topConstrainable = new HqlAnd();
+        tables           = new HashMap<String, String>();
+        orders           = new ArrayList<SqlOrder>();
         topConstrainable = null;
         countParam       = alias;
         selectParam      = alias;
 
-        entities.put(alias, entity.getSimpleName());
+        tables.put(alias, table);
     }
 
 
 
     //~ --- [METHODS] --------------------------------------------------------------------------------------------------
 
-    public HqlQuery asc(String column) {
+    public SqlQuery asc(String column) {
 
-        this.orders.add(new HqlOrder(column, ORDER_ASCENDING));
+        this.orders.add(new SqlOrder(column, ORDER_ASCENDING));
 
         return this;
     }
@@ -68,16 +67,16 @@ public class HqlQuery {
 
     public String count() {
 
-        return "select count(" + countParam + ") from " + generateSelectWoEntity();
+        return "SELECT COUNT(" + countParam + ") FROM " + generateSelectWoTable();
     }
 
 
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public HqlQuery desc(String column) {
+    public SqlQuery desc(String column) {
 
-        this.orders.add(new HqlOrder(column, ORDER_DESCENDING));
+        this.orders.add(new SqlOrder(column, ORDER_DESCENDING));
 
         return this;
     }
@@ -104,13 +103,13 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public HqlQuery join(Class entity, String alias) throws EntityAliasAlreadyUsedException {
+    public SqlQuery join(String table, String alias) throws TableAliasAlreadyUsedException {
 
-        if (entities.containsKey(alias)) {
-            throw new EntityAliasAlreadyUsedException();
+        if (tables.containsKey(alias)) {
+            throw new TableAliasAlreadyUsedException();
         }
 
-        entities.put(alias, entity.getSimpleName());
+        tables.put(alias, table);
 
         return this;
     }
@@ -119,14 +118,14 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public HqlQuery join(Class entity, String alias, HqlConstrainable constraint)
-        throws EntityAliasAlreadyUsedException {
+    public SqlQuery join(String table, String alias, SqlConstrainable constraint)
+        throws TableAliasAlreadyUsedException {
 
-        if (entities.containsKey(alias)) {
-            throw new EntityAliasAlreadyUsedException();
+        if (tables.containsKey(alias)) {
+            throw new TableAliasAlreadyUsedException();
         }
 
-        entities.put(alias, entity.getSimpleName());
+        tables.put(alias, table);
         where(constraint);
 
         return this;
@@ -136,14 +135,14 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public HqlQuery join(Class entity, String alias, String leftSide, String rightSide)
-        throws EntityAliasAlreadyUsedException {
+    public SqlQuery join(String table, String alias, String leftSide, String rightSide)
+        throws TableAliasAlreadyUsedException {
 
-        if (entities.containsKey(alias)) {
-            throw new EntityAliasAlreadyUsedException();
+        if (tables.containsKey(alias)) {
+            throw new TableAliasAlreadyUsedException();
         }
 
-        entities.put(alias, entity.getSimpleName());
+        tables.put(alias, table);
         where(leftSide, rightSide);
 
         return this;
@@ -153,7 +152,7 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public HqlQuery order(HqlOrder... orders) {
+    public SqlQuery order(SqlOrder... orders) {
 
         this.orders.addAll(Arrays.asList(orders));
 
@@ -166,7 +165,7 @@ public class HqlQuery {
 
     public String select() {
 
-        return "select " + selectParam + " from " + generateSelectWoEntity() + generateOrders();
+        return "SELECT " + selectParam + " FROM " + generateSelectWoTable() + generateOrders();
     }
 
 
@@ -191,12 +190,12 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public HqlQuery where(HqlConstrainable constrainable) {
+    public SqlQuery where(SqlConstrainable constrainable) {
 
         if (topConstrainable == null) {
 
-            if (constrainable instanceof HqlConstraint) {
-                topConstrainable = new HqlAnd(constrainable);
+            if (constrainable instanceof SqlConstraint) {
+                topConstrainable = new SqlAnd(constrainable);
             } else {
                 topConstrainable = constrainable;
             }
@@ -211,12 +210,12 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public HqlQuery where(Object leftSide, Object rightSide) {
+    public SqlQuery where(Object leftSide, Object rightSide) {
 
-        HqlConstraint constraint = new HqlConstraint(leftSide.toString(), rightSide.toString());
+        SqlConstraint constraint = new SqlConstraint(leftSide, rightSide);
 
         if (topConstrainable == null) {
-            topConstrainable = new HqlAnd(constraint);
+            topConstrainable = new SqlAnd(constraint);
         } else {
             topConstrainable.add(constraint);
         }
@@ -232,12 +231,12 @@ public class HqlQuery {
 
         String query = "";
 
-        for (HqlOrder hqlOrder : orders) {
-            query += ", " + hqlOrder.getColumn() + (hqlOrder.getMethod() == ORDER_ASCENDING ? " asc" : " desc");
+        for (SqlOrder hqlOrder : orders) {
+            query += ", " + hqlOrder.getColumn() + (hqlOrder.getMethod() == ORDER_ASCENDING ? " ASC" : " DESC");
         }
 
         if (!query.isEmpty()) {
-            query = " order by " + query.substring(2);
+            query = " ORDER BY " + query.substring(2);
         }
 
         return query;
@@ -247,18 +246,18 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    private String generateSelectWoEntity() {
+    private String generateSelectWoTable() {
 
         String query = "";
 
-        for (String alias : entities.keySet()) {
-            query += ", " + entities.get(alias) + " " + alias;
+        for (String alias : tables.keySet()) {
+            query += ", " + tables.get(alias) + " " + alias;
         }
 
         query = query.substring(2);
 
-        if (topConstrainable.size() > 0) {
-            query += " where " + wh(topConstrainable);
+        if (topConstrainable != null && topConstrainable.size() > 0) {
+            query += " WHERE " + wh(topConstrainable);
         }
 
         return query;
@@ -268,43 +267,43 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    private String wh(HqlConstrainable constrainable) {
+    private String wh(SqlConstrainable constrainable) {
 
         String                     query      = "";
-        Iterator<HqlConstrainable> iterator   = constrainable.getIterator();
+        Iterator<SqlConstrainable> iterator   = constrainable.getIterator();
         String                     whereQuery = "";
 
-        if (constrainable instanceof HqlConstraint) {
-            HqlConstraint constraint = (HqlConstraint) constrainable;
+        if (constrainable instanceof SqlConstraint) {
+            SqlConstraint constraint = (SqlConstraint) constrainable;
 
-            if (constraint.getOperator() == HqlConstraint.EQUAL) {
+            if (constraint.getOperator() == SqlConstraint.EQUAL) {
                 query += constraint.getLeftSide() + " = " + constraint.getRightSide();
-            } else if (constraint.getOperator() == HqlConstraint.NOT_EQUAL) {
+            } else if (constraint.getOperator() == SqlConstraint.NOT_EQUAL) {
                 query += constraint.getLeftSide() + " != " + constraint.getRightSide();
-            } else if (constraint.getOperator() == HqlConstraint.LIKE) {
+            } else if (constraint.getOperator() == SqlConstraint.LIKE) {
                 query += constraint.getLeftSide() + " LIKE " + constraint.getRightSide();
-            } else if (constraint.getOperator() == HqlConstraint.LIKE_LOWER) {
-                query += "lower(" + constraint.getLeftSide() + ") like lower('" + constraint.getRightSide() + "')";
-            } else if (constraint.getOperator() == HqlConstraint.LESS_THAN) {
+            } else if (constraint.getOperator() == SqlConstraint.LIKE_LOWER) {
+                query += "LOWER(" + constraint.getLeftSide() + ") LIKE LOWER(" + constraint.getRightSide() + ")";
+            } else if (constraint.getOperator() == SqlConstraint.LESS_THAN) {
                 query += constraint.getLeftSide() + " < " + constraint.getRightSide();
-            } else if (constraint.getOperator() == HqlConstraint.LESS_THAN_OR_EQUAL) {
+            } else if (constraint.getOperator() == SqlConstraint.LESS_THAN_OR_EQUAL) {
                 query += constraint.getLeftSide() + " <= " + constraint.getRightSide();
-            } else if (constraint.getOperator() == HqlConstraint.GREATER_THAN) {
+            } else if (constraint.getOperator() == SqlConstraint.GREATER_THAN) {
                 query += constraint.getLeftSide() + " > " + constraint.getRightSide();
-            } else if (constraint.getOperator() == HqlConstraint.GREATER_THAN_OR_EQUAL) {
+            } else if (constraint.getOperator() == SqlConstraint.GREATER_THAN_OR_EQUAL) {
                 query += constraint.getLeftSide() + " >= " + constraint.getRightSide();
             }
-        } else if (constrainable instanceof HqlAnd) {
+        } else if (constrainable instanceof SqlAnd) {
 
             while (iterator.hasNext()) {
-                whereQuery += " and " + wh(iterator.next());
+                whereQuery += " AND " + wh(iterator.next());
             }
 
             query += "(" + whereQuery.substring(5) + ")";
-        } else if (constrainable instanceof HqlOr) {
+        } else if (constrainable instanceof SqlOr) {
 
             while (iterator.hasNext()) {
-                whereQuery += " or " + wh(iterator.next());
+                whereQuery += " OR " + wh(iterator.next());
             }
 
             query += "(" + whereQuery.substring(4) + ")";
