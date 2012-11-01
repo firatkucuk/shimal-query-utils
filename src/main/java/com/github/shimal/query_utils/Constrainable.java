@@ -1,23 +1,23 @@
 
-package com.github.shimal.query_utils.sql;
+package com.github.shimal.query_utils;
 
 import java.util.Iterator;
 
 
 
-public interface SqlConstrainable {
+public interface Constrainable {
 
 
 
     //~ --- [METHODS] --------------------------------------------------------------------------------------------------
 
-    public void add(SqlConstrainable constrainable);
+    public void add(Constrainable constrainable);
 
 
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public Iterator<SqlConstrainable> getIterator();
+    public Iterator<Constrainable> getIterator();
 
 
 

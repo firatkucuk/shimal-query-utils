@@ -1,6 +1,7 @@
 
 package com.github.shimal.query_utils.sql;
 
+import com.github.shimal.query_utils.Constrainable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -8,21 +9,21 @@ import java.util.List;
 
 
 
-public class SqlAnd implements SqlConstrainable {
+public class SqlAnd implements Constrainable {
 
 
 
     //~ --- [INSTANCE FIELDS] ------------------------------------------------------------------------------------------
 
-    private List<SqlConstrainable> constrainables;
+    private List<Constrainable> constrainables;
 
 
 
     //~ --- [CONSTRUCTORS] ---------------------------------------------------------------------------------------------
 
-    public SqlAnd(SqlConstrainable... constrainables) {
+    public SqlAnd(Constrainable... constrainables) {
 
-        this.constrainables = new ArrayList<SqlConstrainable>();
+        this.constrainables = new ArrayList<Constrainable>();
         this.constrainables.addAll(Arrays.asList(constrainables));
     }
 
@@ -31,7 +32,7 @@ public class SqlAnd implements SqlConstrainable {
     //~ --- [METHODS] --------------------------------------------------------------------------------------------------
 
     @Override
-    public void add(SqlConstrainable constrainable) {
+    public void add(Constrainable constrainable) {
 
         this.constrainables.add(constrainable);
     }
@@ -41,7 +42,7 @@ public class SqlAnd implements SqlConstrainable {
     //~ ----------------------------------------------------------------------------------------------------------------
 
     @Override
-    public Iterator<SqlConstrainable> getIterator() {
+    public Iterator<Constrainable> getIterator() {
 
         return constrainables.iterator();
     }

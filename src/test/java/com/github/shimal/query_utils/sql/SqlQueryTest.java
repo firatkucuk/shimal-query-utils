@@ -1,6 +1,7 @@
 
 package com.github.shimal.query_utils.sql;
 
+import com.github.shimal.query_utils.Querable;
 import org.junit.Test;
 
 import static com.github.shimal.query_utils.sql.SqlQueryUtils.and;
@@ -108,8 +109,7 @@ public class SqlQueryTest {
             sqlQuery = sqlQuery.join("ROLE_PERMISSIONS", "RP", "RP.PERMISSION_ID", "P.ID");
             sqlQuery = sqlQuery.join("ROLES", "R", "R.ID", "RP.ROLE_ID");
             sqlQuery = sqlQuery.join("USER_ROLES", "UR", "UR.USER_ID", "U.ID");
-            sqlQuery = sqlQuery.where(or(eq("U.NAME", "U.USERNAME"), and(gte("U.ID", 5), eq("U.ID", 2))));
-
+            sqlQuery = (SqlQuery) sqlQuery.where(or(eq("U.NAME", "U.USERNAME"), and(gte("U.ID", 5), eq("U.ID", 2))));
 
             String expected = "SELECT U";
             expected += " FROM";
@@ -142,7 +142,7 @@ public class SqlQueryTest {
     @Test
     public void testMultiWhereQuery() {
 
-        SqlQuery sqlQuery = new SqlQuery("USERS", "U").where("U.NAME", "U.USERNAME").where("U.ID", 3);
+        Querable sqlQuery = new SqlQuery("USERS", "U").where("U.NAME", "U.USERNAME").where("U.ID", 3);
         String   expected = "SELECT U FROM USERS U WHERE (U.NAME = U.USERNAME AND U.ID = 3)";
 
         if (!expected.equals(sqlQuery.select())) {
@@ -208,7 +208,7 @@ public class SqlQueryTest {
     @Test
     public void testOrder() {
 
-        SqlQuery sqlQuery = new SqlQuery("USERS").asc("S.ID");
+        Querable sqlQuery = new SqlQuery("USERS").asc("S.ID");
         String   expected = "SELECT S FROM USERS S ORDER BY S.ID ASC";
 
         if (!expected.equals(sqlQuery.select())) {
@@ -259,7 +259,7 @@ public class SqlQueryTest {
     @Test
     public void testWhereQuery() {
 
-        SqlQuery sqlQuery = new SqlQuery("USERS", "U").where("U.NAME", "U.USERNAME");
+        Querable sqlQuery = new SqlQuery("USERS", "U").where("U.NAME", "U.USERNAME");
         String   expected = "SELECT U FROM USERS U WHERE (U.NAME = U.USERNAME)";
 
         if (!expected.equals(sqlQuery.select())) {

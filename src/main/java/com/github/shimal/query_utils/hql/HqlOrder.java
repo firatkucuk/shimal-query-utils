@@ -1,8 +1,11 @@
 
 package com.github.shimal.query_utils.hql;
 
+import com.github.shimal.query_utils.Orderable;
 
-public class HqlOrder {
+
+
+public class HqlOrder implements Orderable {
 
 
 
@@ -25,6 +28,7 @@ public class HqlOrder {
 
     //~ --- [METHODS] --------------------------------------------------------------------------------------------------
 
+    @Override
     public String getColumn() {
 
         return column;
@@ -34,6 +38,7 @@ public class HqlOrder {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
+    @Override
     public int getMethod() {
 
         return method;

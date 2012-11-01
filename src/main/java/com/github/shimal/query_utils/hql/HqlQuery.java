@@ -1,6 +1,10 @@
 
 package com.github.shimal.query_utils.hql;
 
+import com.github.shimal.query_utils.AliasAlreadyUsedException;
+import com.github.shimal.query_utils.Constrainable;
+import com.github.shimal.query_utils.Orderable;
+import com.github.shimal.query_utils.Querable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -9,14 +13,7 @@ import java.util.List;
 
 
 
-public class HqlQuery {
-
-
-
-    //~ --- [STATIC FIELDS/INITIALIZERS] -------------------------------------------------------------------------------
-
-    public static final int ORDER_ASCENDING  = 0;
-    public static final int ORDER_DESCENDING = 1;
+public class HqlQuery implements Querable {
 
 
 
@@ -24,9 +21,9 @@ public class HqlQuery {
 
     private String                  countParam;
     private HashMap<String, String> entities;
-    private List<HqlOrder>          orders;
+    private List<Orderable>         orders;
     private String                  selectParam;
-    private HqlConstrainable        topConstrainable;
+    private Constrainable           topConstrainable;
 
 
 
@@ -42,7 +39,7 @@ public class HqlQuery {
     public HqlQuery(Class entity, String alias) {
 
         entities         = new HashMap<String, String>();
-        orders           = new ArrayList<HqlOrder>();
+        orders           = new ArrayList<Orderable>();
         topConstrainable = new HqlAnd();
         topConstrainable = null;
         countParam       = alias;
@@ -55,7 +52,8 @@ public class HqlQuery {
 
     //~ --- [METHODS] --------------------------------------------------------------------------------------------------
 
-    public HqlQuery asc(String column) {
+    @Override
+    public Querable asc(String column) {
 
         this.orders.add(new HqlOrder(column, ORDER_ASCENDING));
 
@@ -66,6 +64,7 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
+    @Override
     public String count() {
 
         return "select count(" + countParam + ") from " + generateSelectWoEntity();
@@ -75,7 +74,8 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public HqlQuery desc(String column) {
+    @Override
+    public Querable desc(String column) {
 
         this.orders.add(new HqlOrder(column, ORDER_DESCENDING));
 
@@ -86,6 +86,7 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
+    @Override
     public String getCountParam() {
 
         return countParam;
@@ -95,6 +96,7 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
+    @Override
     public String getSelectParam() {
 
         return selectParam;
@@ -104,10 +106,10 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public HqlQuery join(Class entity, String alias) throws EntityAliasAlreadyUsedException {
+    public Querable join(Class entity, String alias) throws AliasAlreadyUsedException {
 
         if (entities.containsKey(alias)) {
-            throw new EntityAliasAlreadyUsedException();
+            throw new AliasAlreadyUsedException();
         }
 
         entities.put(alias, entity.getSimpleName());
@@ -119,11 +121,10 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public HqlQuery join(Class entity, String alias, HqlConstrainable constraint)
-        throws EntityAliasAlreadyUsedException {
+    public Querable join(Class entity, String alias, Constrainable constraint) throws AliasAlreadyUsedException {
 
         if (entities.containsKey(alias)) {
-            throw new EntityAliasAlreadyUsedException();
+            throw new AliasAlreadyUsedException();
         }
 
         entities.put(alias, entity.getSimpleName());
@@ -136,11 +137,11 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public HqlQuery join(Class entity, String alias, String leftSide, String rightSide)
-        throws EntityAliasAlreadyUsedException {
+    public Querable join(Class entity, String alias, Object leftSide, Object rightSide)
+        throws AliasAlreadyUsedException {
 
         if (entities.containsKey(alias)) {
-            throw new EntityAliasAlreadyUsedException();
+            throw new AliasAlreadyUsedException();
         }
 
         entities.put(alias, entity.getSimpleName());
@@ -153,7 +154,8 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public HqlQuery order(HqlOrder... orders) {
+    @Override
+    public Querable order(Orderable... orders) {
 
         this.orders.addAll(Arrays.asList(orders));
 
@@ -164,6 +166,7 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
+    @Override
     public String select() {
 
         return "select " + selectParam + " from " + generateSelectWoEntity() + generateOrders();
@@ -173,6 +176,7 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
+    @Override
     public void setCountParam(String countParam) {
 
         this.countParam = countParam;
@@ -182,6 +186,7 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
+    @Override
     public void setSelectParam(String selectParam) {
 
         this.selectParam = selectParam;
@@ -191,7 +196,8 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public HqlQuery where(HqlConstrainable constrainable) {
+    @Override
+    public Querable where(Constrainable constrainable) {
 
         if (topConstrainable == null) {
 
@@ -211,7 +217,8 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public HqlQuery where(Object leftSide, Object rightSide) {
+    @Override
+    public Querable where(Object leftSide, Object rightSide) {
 
         HqlConstraint constraint = new HqlConstraint(leftSide.toString(), rightSide.toString());
 
@@ -232,8 +239,8 @@ public class HqlQuery {
 
         String query = "";
 
-        for (HqlOrder hqlOrder : orders) {
-            query += ", " + hqlOrder.getColumn() + (hqlOrder.getMethod() == ORDER_ASCENDING ? " asc" : " desc");
+        for (Orderable order : orders) {
+            query += ", " + order.getColumn() + (order.getMethod() == ORDER_ASCENDING ? " asc" : " desc");
         }
 
         if (!query.isEmpty()) {
@@ -268,11 +275,11 @@ public class HqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    private String wh(HqlConstrainable constrainable) {
+    private String wh(Constrainable constrainable) {
 
-        String                     query      = "";
-        Iterator<HqlConstrainable> iterator   = constrainable.getIterator();
-        String                     whereQuery = "";
+        String                  query      = "";
+        Iterator<Constrainable> iterator   = constrainable.getIterator();
+        String                  whereQuery = "";
 
         if (constrainable instanceof HqlConstraint) {
             HqlConstraint constraint = (HqlConstraint) constrainable;

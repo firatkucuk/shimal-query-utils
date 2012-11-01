@@ -1,6 +1,9 @@
 
 package com.github.shimal.query_utils.sql;
 
+import com.github.shimal.query_utils.Constrainable;
+
+
 
 public class SqlQueryUtils {
 
@@ -8,7 +11,7 @@ public class SqlQueryUtils {
 
     //~ --- [METHODS] --------------------------------------------------------------------------------------------------
 
-    public static SqlConstrainable and(SqlConstrainable constrainable) {
+    public static Constrainable and(Constrainable constrainable) {
 
         return new SqlAnd(constrainable);
     }
@@ -17,7 +20,7 @@ public class SqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static SqlConstrainable and(SqlConstrainable... constrainables) {
+    public static Constrainable and(Constrainable... constrainables) {
 
         return new SqlAnd(constrainables);
     }
@@ -26,7 +29,7 @@ public class SqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static SqlConstrainable and(SqlConstrainable constrainable1, SqlConstrainable constrainable2) {
+    public static Constrainable and(Constrainable constrainable1, Constrainable constrainable2) {
 
         return new SqlAnd(constrainable1, constrainable2);
     }
@@ -35,7 +38,7 @@ public class SqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static SqlConstrainable and(Object leftSide, Object rightSide) {
+    public static Constrainable and(Object leftSide, Object rightSide) {
 
         return new SqlAnd(new SqlConstraint(leftSide, rightSide));
     }
@@ -62,7 +65,7 @@ public class SqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static SqlConstrainable eq(Object leftSide, Object rightSide) {
+    public static Constrainable eq(Object leftSide, Object rightSide) {
 
         return new SqlConstraint(leftSide, rightSide);
     }
@@ -71,7 +74,7 @@ public class SqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static SqlConstrainable gt(Object leftSide, Object rightSide) {
+    public static Constrainable gt(Object leftSide, Object rightSide) {
 
         return new SqlConstraint(leftSide, rightSide, SqlConstraint.GREATER_THAN);
     }
@@ -80,7 +83,7 @@ public class SqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static SqlConstrainable gte(Object leftSide, Object rightSide) {
+    public static Constrainable gte(Object leftSide, Object rightSide) {
 
         return new SqlConstraint(leftSide, rightSide, SqlConstraint.GREATER_THAN_OR_EQUAL);
     }
@@ -89,7 +92,7 @@ public class SqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static SqlConstrainable like(Object leftSide, Object rightSide) {
+    public static Constrainable like(Object leftSide, Object rightSide) {
 
         return new SqlConstraint(leftSide, rightSide, SqlConstraint.LIKE);
     }
@@ -98,7 +101,7 @@ public class SqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static SqlConstrainable likeLower(Object leftSide, Object rightSide) {
+    public static Constrainable likeLower(Object leftSide, Object rightSide) {
 
         return new SqlConstraint(leftSide, rightSide, SqlConstraint.LIKE_LOWER);
     }
@@ -107,7 +110,7 @@ public class SqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static SqlConstrainable lt(Object leftSide, Object rightSide) {
+    public static Constrainable lt(Object leftSide, Object rightSide) {
 
         return new SqlConstraint(leftSide, rightSide, SqlConstraint.LESS_THAN);
     }
@@ -116,7 +119,7 @@ public class SqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static SqlConstrainable lte(Object leftSide, Object rightSide) {
+    public static Constrainable lte(Object leftSide, Object rightSide) {
 
         return new SqlConstraint(leftSide, rightSide, SqlConstraint.LESS_THAN_OR_EQUAL);
     }
@@ -125,7 +128,7 @@ public class SqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static SqlConstrainable ne(Object leftSide, Object rightSide) {
+    public static Constrainable ne(Object leftSide, Object rightSide) {
 
         return new SqlConstraint(leftSide, rightSide, SqlConstraint.NOT_EQUAL);
     }
@@ -134,7 +137,7 @@ public class SqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static SqlConstrainable or(SqlConstrainable constrainable) {
+    public static Constrainable or(Constrainable constrainable) {
 
         return new SqlOr(constrainable);
     }
@@ -143,7 +146,7 @@ public class SqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static SqlConstrainable or(SqlConstrainable... constrainables) {
+    public static Constrainable or(Constrainable... constrainables) {
 
         return new SqlOr(constrainables);
     }
@@ -152,7 +155,7 @@ public class SqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static SqlConstrainable or(SqlConstrainable constrainable1, SqlConstrainable constrainable2) {
+    public static Constrainable or(Constrainable constrainable1, Constrainable constrainable2) {
 
         return new SqlOr(constrainable1, constrainable2);
     }
@@ -161,7 +164,7 @@ public class SqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static SqlConstrainable or(Object leftSide, Object rightSide) {
+    public static Constrainable or(Object leftSide, Object rightSide) {
 
         return new SqlOr(new SqlConstraint(leftSide, rightSide));
     }
@@ -170,7 +173,7 @@ public class SqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static SqlConstrainable where(SqlConstrainable constrainable) {
+    public static Constrainable where(Constrainable constrainable) {
 
         return new SqlAnd(constrainable);
     }
@@ -179,7 +182,7 @@ public class SqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static SqlConstrainable where(SqlConstrainable... constrainables) {
+    public static Constrainable where(Constrainable... constrainables) {
 
         return new SqlAnd(constrainables);
     }
@@ -188,7 +191,7 @@ public class SqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static SqlConstrainable where(String leftSide, String rightSide) {
+    public static Constrainable where(String leftSide, String rightSide) {
 
         return new SqlAnd(new SqlConstraint(leftSide, rightSide));
     }

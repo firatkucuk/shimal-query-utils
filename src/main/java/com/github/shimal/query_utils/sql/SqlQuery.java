@@ -1,6 +1,10 @@
 
 package com.github.shimal.query_utils.sql;
 
+import com.github.shimal.query_utils.AliasAlreadyUsedException;
+import com.github.shimal.query_utils.Constrainable;
+import com.github.shimal.query_utils.Orderable;
+import com.github.shimal.query_utils.Querable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -9,24 +13,17 @@ import java.util.List;
 
 
 
-public class SqlQuery {
-
-
-
-    //~ --- [STATIC FIELDS/INITIALIZERS] -------------------------------------------------------------------------------
-
-    public static final int ORDER_ASCENDING  = 0;
-    public static final int ORDER_DESCENDING = 1;
+public class SqlQuery implements Querable {
 
 
 
     //~ --- [INSTANCE FIELDS] ------------------------------------------------------------------------------------------
 
     private String                  countParam;
-    private List<SqlOrder>          orders;
+    private List<Orderable>         orders;
     private String                  selectParam;
     private HashMap<String, String> tables;
-    private SqlConstrainable        topConstrainable;
+    private Constrainable           topConstrainable;
 
 
 
@@ -42,7 +39,7 @@ public class SqlQuery {
     public SqlQuery(String table, String alias) {
 
         tables           = new HashMap<String, String>();
-        orders           = new ArrayList<SqlOrder>();
+        orders           = new ArrayList<Orderable>();
         topConstrainable = null;
         countParam       = alias;
         selectParam      = alias;
@@ -54,7 +51,8 @@ public class SqlQuery {
 
     //~ --- [METHODS] --------------------------------------------------------------------------------------------------
 
-    public SqlQuery asc(String column) {
+    @Override
+    public Querable asc(String column) {
 
         this.orders.add(new SqlOrder(column, ORDER_ASCENDING));
 
@@ -65,6 +63,7 @@ public class SqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
+    @Override
     public String count() {
 
         return "SELECT COUNT(" + countParam + ") FROM " + generateSelectWoTable();
@@ -74,7 +73,8 @@ public class SqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public SqlQuery desc(String column) {
+    @Override
+    public Querable desc(String column) {
 
         this.orders.add(new SqlOrder(column, ORDER_DESCENDING));
 
@@ -85,6 +85,7 @@ public class SqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
+    @Override
     public String getCountParam() {
 
         return countParam;
@@ -94,6 +95,7 @@ public class SqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
+    @Override
     public String getSelectParam() {
 
         return selectParam;
@@ -103,10 +105,10 @@ public class SqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public SqlQuery join(String table, String alias) throws TableAliasAlreadyUsedException {
+    public SqlQuery join(String table, String alias) throws AliasAlreadyUsedException {
 
         if (tables.containsKey(alias)) {
-            throw new TableAliasAlreadyUsedException();
+            throw new AliasAlreadyUsedException();
         }
 
         tables.put(alias, table);
@@ -118,11 +120,10 @@ public class SqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public SqlQuery join(String table, String alias, SqlConstrainable constraint)
-        throws TableAliasAlreadyUsedException {
+    public SqlQuery join(String table, String alias, Constrainable constraint) throws AliasAlreadyUsedException {
 
         if (tables.containsKey(alias)) {
-            throw new TableAliasAlreadyUsedException();
+            throw new AliasAlreadyUsedException();
         }
 
         tables.put(alias, table);
@@ -135,11 +136,11 @@ public class SqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public SqlQuery join(String table, String alias, String leftSide, String rightSide)
-        throws TableAliasAlreadyUsedException {
+    public SqlQuery join(String table, String alias, Object leftSide, Object rightSide)
+        throws AliasAlreadyUsedException {
 
         if (tables.containsKey(alias)) {
-            throw new TableAliasAlreadyUsedException();
+            throw new AliasAlreadyUsedException();
         }
 
         tables.put(alias, table);
@@ -152,7 +153,8 @@ public class SqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public SqlQuery order(SqlOrder... orders) {
+    @Override
+    public Querable order(Orderable... orders) {
 
         this.orders.addAll(Arrays.asList(orders));
 
@@ -163,6 +165,7 @@ public class SqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
+    @Override
     public String select() {
 
         return "SELECT " + selectParam + " FROM " + generateSelectWoTable() + generateOrders();
@@ -172,6 +175,7 @@ public class SqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
+    @Override
     public void setCountParam(String countParam) {
 
         this.countParam = countParam;
@@ -181,6 +185,7 @@ public class SqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
+    @Override
     public void setSelectParam(String selectParam) {
 
         this.selectParam = selectParam;
@@ -190,7 +195,8 @@ public class SqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public SqlQuery where(SqlConstrainable constrainable) {
+    @Override
+    public Querable where(Constrainable constrainable) {
 
         if (topConstrainable == null) {
 
@@ -210,7 +216,8 @@ public class SqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public SqlQuery where(Object leftSide, Object rightSide) {
+    @Override
+    public Querable where(Object leftSide, Object rightSide) {
 
         SqlConstraint constraint = new SqlConstraint(leftSide, rightSide);
 
@@ -231,8 +238,8 @@ public class SqlQuery {
 
         String query = "";
 
-        for (SqlOrder hqlOrder : orders) {
-            query += ", " + hqlOrder.getColumn() + (hqlOrder.getMethod() == ORDER_ASCENDING ? " ASC" : " DESC");
+        for (Orderable order : orders) {
+            query += ", " + order.getColumn() + (order.getMethod() == ORDER_ASCENDING ? " ASC" : " DESC");
         }
 
         if (!query.isEmpty()) {
@@ -267,11 +274,11 @@ public class SqlQuery {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    private String wh(SqlConstrainable constrainable) {
+    private String wh(Constrainable constrainable) {
 
-        String                     query      = "";
-        Iterator<SqlConstrainable> iterator   = constrainable.getIterator();
-        String                     whereQuery = "";
+        String                  query      = "";
+        Iterator<Constrainable> iterator   = constrainable.getIterator();
+        String                  whereQuery = "";
 
         if (constrainable instanceof SqlConstraint) {
             SqlConstraint constraint = (SqlConstraint) constrainable;

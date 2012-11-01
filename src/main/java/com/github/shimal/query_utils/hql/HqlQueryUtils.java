@@ -1,6 +1,9 @@
 
 package com.github.shimal.query_utils.hql;
 
+import com.github.shimal.query_utils.Constrainable;
+
+
 
 public class HqlQueryUtils {
 
@@ -8,7 +11,7 @@ public class HqlQueryUtils {
 
     //~ --- [METHODS] --------------------------------------------------------------------------------------------------
 
-    public static HqlConstrainable and(HqlConstrainable constrainable) {
+    public static Constrainable and(Constrainable constrainable) {
 
         return new HqlAnd(constrainable);
     }
@@ -17,7 +20,7 @@ public class HqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static HqlConstrainable and(HqlConstrainable... constrainables) {
+    public static Constrainable and(Constrainable... constrainables) {
 
         return new HqlAnd(constrainables);
     }
@@ -26,7 +29,7 @@ public class HqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static HqlConstrainable and(HqlConstrainable constrainable1, HqlConstrainable constrainable2) {
+    public static Constrainable and(Constrainable constrainable1, Constrainable constrainable2) {
 
         return new HqlAnd(constrainable1, constrainable2);
     }
@@ -35,7 +38,7 @@ public class HqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static HqlConstrainable and(Object leftSide, Object rightSide) {
+    public static Constrainable and(Object leftSide, Object rightSide) {
 
         return new HqlAnd(new HqlConstraint(leftSide, rightSide));
     }
@@ -62,7 +65,7 @@ public class HqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static HqlConstrainable eq(Object leftSide, Object rightSide) {
+    public static Constrainable eq(Object leftSide, Object rightSide) {
 
         return new HqlConstraint(leftSide, rightSide);
     }
@@ -71,7 +74,7 @@ public class HqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static HqlConstrainable gt(Object leftSide, Object rightSide) {
+    public static Constrainable gt(Object leftSide, Object rightSide) {
 
         return new HqlConstraint(leftSide, rightSide, HqlConstraint.GREATER_THAN);
     }
@@ -80,7 +83,7 @@ public class HqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static HqlConstrainable gte(Object leftSide, Object rightSide) {
+    public static Constrainable gte(Object leftSide, Object rightSide) {
 
         return new HqlConstraint(leftSide, rightSide, HqlConstraint.GREATER_THAN_OR_EQUAL);
     }
@@ -89,7 +92,7 @@ public class HqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static HqlConstrainable like(Object leftSide, Object rightSide) {
+    public static Constrainable like(Object leftSide, Object rightSide) {
 
         return new HqlConstraint(leftSide, rightSide, HqlConstraint.LIKE);
     }
@@ -98,7 +101,7 @@ public class HqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static HqlConstrainable likeLower(Object leftSide, Object rightSide) {
+    public static Constrainable likeLower(Object leftSide, Object rightSide) {
 
         return new HqlConstraint(leftSide, rightSide, HqlConstraint.LIKE_LOWER);
     }
@@ -107,7 +110,7 @@ public class HqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static HqlConstrainable lt(Object leftSide, Object rightSide) {
+    public static Constrainable lt(Object leftSide, Object rightSide) {
 
         return new HqlConstraint(leftSide, rightSide, HqlConstraint.LESS_THAN);
     }
@@ -116,7 +119,7 @@ public class HqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static HqlConstrainable lte(Object leftSide, Object rightSide) {
+    public static Constrainable lte(Object leftSide, Object rightSide) {
 
         return new HqlConstraint(leftSide, rightSide, HqlConstraint.LESS_THAN_OR_EQUAL);
     }
@@ -125,7 +128,7 @@ public class HqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static HqlConstrainable ne(Object leftSide, Object rightSide) {
+    public static Constrainable ne(Object leftSide, Object rightSide) {
 
         return new HqlConstraint(leftSide, rightSide, HqlConstraint.NOT_EQUAL);
     }
@@ -134,7 +137,7 @@ public class HqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static HqlConstrainable or(HqlConstrainable constrainable) {
+    public static Constrainable or(Constrainable constrainable) {
 
         return new HqlOr(constrainable);
     }
@@ -143,7 +146,7 @@ public class HqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static HqlConstrainable or(HqlConstrainable... constrainables) {
+    public static Constrainable or(Constrainable... constrainables) {
 
         return new HqlOr(constrainables);
     }
@@ -152,7 +155,7 @@ public class HqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static HqlConstrainable or(HqlConstrainable constrainable1, HqlConstrainable constrainable2) {
+    public static Constrainable or(Constrainable constrainable1, Constrainable constrainable2) {
 
         return new HqlOr(constrainable1, constrainable2);
     }
@@ -161,7 +164,7 @@ public class HqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static HqlConstrainable or(Object leftSide, Object rightSide) {
+    public static Constrainable or(Object leftSide, Object rightSide) {
 
         return new HqlOr(new HqlConstraint(leftSide, rightSide));
     }
@@ -170,7 +173,7 @@ public class HqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static HqlConstrainable where(HqlConstrainable constrainable) {
+    public static Constrainable where(Constrainable constrainable) {
 
         return new HqlAnd(constrainable);
     }
@@ -179,7 +182,7 @@ public class HqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static HqlConstrainable where(HqlConstrainable... constrainables) {
+    public static Constrainable where(Constrainable... constrainables) {
 
         return new HqlAnd(constrainables);
     }
@@ -188,7 +191,7 @@ public class HqlQueryUtils {
 
     //~ ----------------------------------------------------------------------------------------------------------------
 
-    public static HqlConstrainable where(String leftSide, String rightSide) {
+    public static Constrainable where(String leftSide, String rightSide) {
 
         return new HqlAnd(new HqlConstraint(leftSide, rightSide));
     }

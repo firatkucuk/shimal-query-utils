@@ -1,6 +1,7 @@
 
 package com.github.shimal.query_utils.hql;
 
+import com.github.shimal.query_utils.Constrainable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -8,21 +9,21 @@ import java.util.List;
 
 
 
-public class HqlAnd implements HqlConstrainable {
+public class HqlAnd implements Constrainable {
 
 
 
     //~ --- [INSTANCE FIELDS] ------------------------------------------------------------------------------------------
 
-    private List<HqlConstrainable> constrainables;
+    private List<Constrainable> constrainables;
 
 
 
     //~ --- [CONSTRUCTORS] ---------------------------------------------------------------------------------------------
 
-    public HqlAnd(HqlConstrainable... constrainables) {
+    public HqlAnd(Constrainable... constrainables) {
 
-        this.constrainables = new ArrayList<HqlConstrainable>();
+        this.constrainables = new ArrayList<Constrainable>();
         this.constrainables.addAll(Arrays.asList(constrainables));
     }
 
@@ -31,7 +32,7 @@ public class HqlAnd implements HqlConstrainable {
     //~ --- [METHODS] --------------------------------------------------------------------------------------------------
 
     @Override
-    public void add(HqlConstrainable constrainable) {
+    public void add(Constrainable constrainable) {
 
         this.constrainables.add(constrainable);
     }
@@ -41,7 +42,7 @@ public class HqlAnd implements HqlConstrainable {
     //~ ----------------------------------------------------------------------------------------------------------------
 
     @Override
-    public Iterator<HqlConstrainable> getIterator() {
+    public Iterator<Constrainable> getIterator() {
 
         return constrainables.iterator();
     }
