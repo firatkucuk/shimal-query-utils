@@ -37,7 +37,7 @@ public class SqlQueryTest {
     public void testCountQuery() {
 
         SqlQuery sqlQuery = new SqlQuery("USERS");
-        String   expected = "SELECT COUNT(S) FROM USERS S";
+        String   expected = "SELECT COUNT(S.*) FROM USERS S";
 
         if (!expected.equals(sqlQuery.count())) {
             assert false;
@@ -53,14 +53,14 @@ public class SqlQueryTest {
 
         try {
             SqlQuery sqlQuery = new SqlQuery("USERS").join("USER_PERMISSIONS", "UP");
-            String   expected = "SELECT S FROM USERS S, USER_PERMISSIONS UP";
+            String   expected = "SELECT S.* FROM USERS S, USER_PERMISSIONS UP";
 
             if (!expected.equals(sqlQuery.select())) {
                 assert false;
             }
 
             sqlQuery = new SqlQuery("USERS").join("USER_PERMISSIONS", "UP", "UP.USER_ID", "U.ID");
-            expected = "SELECT S FROM USERS S, USER_PERMISSIONS UP WHERE (UP.USER_ID = U.ID)";
+            expected = "SELECT S.* FROM USERS S, USER_PERMISSIONS UP WHERE (UP.USER_ID = U.ID)";
 
             if (!expected.equals(sqlQuery.select())) {
                 assert false;
@@ -73,7 +73,7 @@ public class SqlQueryTest {
             sqlQuery = sqlQuery.join("ROLES", "R", "R.ID", "RP.ROLE_ID");
             sqlQuery = sqlQuery.join("USER_ROLES", "UR", "UR.USER_ID", "U.ID");
 
-            expected =  "SELECT U";
+            expected =  "SELECT U.*";
             expected += " FROM";
             expected += " USERS U, USER_ROLES UR, PERMISSIONS P, ROLES R, USER_PERMISSIONS UP, ROLE_PERMISSIONS RP";
             expected += " WHERE";
@@ -111,7 +111,7 @@ public class SqlQueryTest {
             sqlQuery = sqlQuery.join("USER_ROLES", "UR", "UR.USER_ID", "U.ID");
             sqlQuery = (SqlQuery) sqlQuery.where(or(eq("U.NAME", "U.USERNAME"), and(gte("U.ID", 5), eq("U.ID", 2))));
 
-            String expected = "SELECT U";
+            String expected = "SELECT U.*";
             expected += " FROM";
             expected += " USERS U, USER_ROLES UR, PERMISSIONS P, ROLES R, USER_PERMISSIONS UP, ROLE_PERMISSIONS RP";
             expected += " WHERE";
@@ -143,7 +143,7 @@ public class SqlQueryTest {
     public void testMultiWhereQuery() {
 
         Querable sqlQuery = new SqlQuery("USERS", "U").where("U.NAME", "U.USERNAME").where("U.ID", 3);
-        String   expected = "SELECT U FROM USERS U WHERE (U.NAME = U.USERNAME AND U.ID = 3)";
+        String   expected = "SELECT U.* FROM USERS U WHERE (U.NAME = U.USERNAME AND U.ID = 3)";
 
         if (!expected.equals(sqlQuery.select())) {
             assert false;
@@ -181,7 +181,7 @@ public class SqlQueryTest {
         }
 
         sqlQuery = new SqlQuery("USERS", "U").where(new SqlOr(eq("U.NAME", "U.USERNAME"), eq("U.ID", 3)));
-        expected = "SELECT U FROM USERS U WHERE (U.NAME = U.USERNAME OR U.ID = 3)";
+        expected = "SELECT U.* FROM USERS U WHERE (U.NAME = U.USERNAME OR U.ID = 3)";
 
         if (!expected.equals(sqlQuery.select())) {
             assert false;
@@ -194,7 +194,7 @@ public class SqlQueryTest {
         }
 
         sqlQuery = new SqlQuery("USERS", "U").where(or(eq("U.NAME", "U.USERNAME"), and(gte("U.ID", 5), eq("U.ID", 2))));
-        expected = "SELECT U FROM USERS U WHERE (U.NAME = U.USERNAME OR (U.ID >= 5 AND U.ID = 2))";
+        expected = "SELECT U.* FROM USERS U WHERE (U.NAME = U.USERNAME OR (U.ID >= 5 AND U.ID = 2))";
 
         if (!expected.equals(sqlQuery.select())) {
             assert false;
@@ -209,14 +209,14 @@ public class SqlQueryTest {
     public void testOrder() {
 
         Querable sqlQuery = new SqlQuery("USERS").asc("S.ID");
-        String   expected = "SELECT S FROM USERS S ORDER BY S.ID ASC";
+        String   expected = "SELECT S.* FROM USERS S ORDER BY S.ID ASC";
 
         if (!expected.equals(sqlQuery.select())) {
             assert false;
         }
 
         sqlQuery = new SqlQuery("USERS").asc("S.ID").desc("S.USERNAME");
-        expected = "SELECT S FROM USERS S ORDER BY S.ID ASC, S.USERNAME DESC";
+        expected = "SELECT S.* FROM USERS S ORDER BY S.ID ASC, S.USERNAME DESC";
 
         if (!expected.equals(sqlQuery.select())) {
             assert false;
@@ -237,7 +237,7 @@ public class SqlQueryTest {
     public void testSelectQuery() {
 
         SqlQuery sqlQuery = new SqlQuery("USERS");
-        String   expected = "SELECT S FROM USERS S";
+        String   expected = "SELECT S.* FROM USERS S";
 
         if (!expected.equals(sqlQuery.select())) {
             assert false;
@@ -245,7 +245,7 @@ public class SqlQueryTest {
 
         // Use another alias for table
         sqlQuery = new SqlQuery("USERS", "A");
-        expected = "SELECT A FROM USERS A";
+        expected = "SELECT A.* FROM USERS A";
 
         if (!expected.equals(sqlQuery.select())) {
             assert false;
@@ -260,49 +260,49 @@ public class SqlQueryTest {
     public void testWhereQuery() {
 
         Querable sqlQuery = new SqlQuery("USERS", "U").where("U.NAME", "U.USERNAME");
-        String   expected = "SELECT U FROM USERS U WHERE (U.NAME = U.USERNAME)";
+        String   expected = "SELECT U.* FROM USERS U WHERE (U.NAME = U.USERNAME)";
 
         if (!expected.equals(sqlQuery.select())) {
             assert false;
         }
 
         sqlQuery = new SqlQuery("USERS", "U").where("U.USER_ID", 3);
-        expected = "SELECT U FROM USERS U WHERE (U.USER_ID = 3)";
+        expected = "SELECT U.* FROM USERS U WHERE (U.USER_ID = 3)";
 
         if (!expected.equals(sqlQuery.select())) {
             assert false;
         }
 
         sqlQuery = new SqlQuery("USERS", "U").where("U.USERNAME", "'admin'");
-        expected = "SELECT U FROM USERS U WHERE (U.USERNAME = 'admin')";
+        expected = "SELECT U.* FROM USERS U WHERE (U.USERNAME = 'admin')";
 
         if (!expected.equals(sqlQuery.select())) {
             assert false;
         }
 
         sqlQuery = new SqlQuery("USERS", "U").where(eq("U.USER_ID", 3));
-        expected = "SELECT U FROM USERS U WHERE (U.USER_ID = 3)";
+        expected = "SELECT U.* FROM USERS U WHERE (U.USER_ID = 3)";
 
         if (!expected.equals(sqlQuery.select())) {
             assert false;
         }
 
         sqlQuery = new SqlQuery("USERS", "U").where(ne("U.USER_ID", 3));
-        expected = "SELECT U FROM USERS U WHERE (U.USER_ID != 3)";
+        expected = "SELECT U.* FROM USERS U WHERE (U.USER_ID != 3)";
 
         if (!expected.equals(sqlQuery.select())) {
             assert false;
         }
 
         sqlQuery = new SqlQuery("USERS", "U").where(like("U.NAME", "'ahmet'"));
-        expected = "SELECT U FROM USERS U WHERE (U.NAME LIKE 'ahmet')";
+        expected = "SELECT U.* FROM USERS U WHERE (U.NAME LIKE 'ahmet')";
 
         if (!expected.equals(sqlQuery.select())) {
             assert false;
         }
 
         sqlQuery = new SqlQuery("USERS", "U").where(likeLower("U.NAME", "'ahmet'"));
-        expected = "SELECT U FROM USERS U WHERE (LOWER(U.NAME) LIKE LOWER('ahmet'))";
+        expected = "SELECT U.* FROM USERS U WHERE (LOWER(U.NAME) LIKE LOWER('ahmet'))";
 
         if (!expected.equals(sqlQuery.select())) {
             assert false;
@@ -310,7 +310,7 @@ public class SqlQueryTest {
 
         // less than
         sqlQuery = new SqlQuery("USERS", "U").where(lt("U.USER_ID", 3));
-        expected = "SELECT U FROM USERS U WHERE (U.USER_ID < 3)";
+        expected = "SELECT U.* FROM USERS U WHERE (U.USER_ID < 3)";
 
         if (!expected.equals(sqlQuery.select())) {
             assert false;
@@ -318,7 +318,7 @@ public class SqlQueryTest {
 
         // less than or equal to
         sqlQuery = new SqlQuery("USERS", "U").where(lte("U.USER_ID", 3));
-        expected = "SELECT U FROM USERS U WHERE (U.USER_ID <= 3)";
+        expected = "SELECT U.* FROM USERS U WHERE (U.USER_ID <= 3)";
 
         if (!expected.equals(sqlQuery.select())) {
             assert false;
@@ -326,7 +326,7 @@ public class SqlQueryTest {
 
         // greater than
         sqlQuery = new SqlQuery("USERS", "U").where(gt("U.USER_ID", 3));
-        expected = "SELECT U FROM USERS U WHERE (U.USER_ID > 3)";
+        expected = "SELECT U.* FROM USERS U WHERE (U.USER_ID > 3)";
 
         if (!expected.equals(sqlQuery.select())) {
             assert false;
@@ -334,7 +334,7 @@ public class SqlQueryTest {
 
         // greater than or equal to
         sqlQuery = new SqlQuery("USERS", "U").where(gte("U.USER_ID", 3));
-        expected = "SELECT U FROM USERS U WHERE (U.USER_ID >= 3)";
+        expected = "SELECT U.* FROM USERS U WHERE (U.USER_ID >= 3)";
 
         if (!expected.equals(sqlQuery.select())) {
             assert false;

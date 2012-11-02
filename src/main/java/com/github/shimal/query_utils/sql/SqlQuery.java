@@ -21,6 +21,7 @@ public class SqlQuery implements Querable {
 
     private String                  countParam;
     private List<Orderable>         orders;
+    private String                  queryTableAlias;
     private String                  selectParam;
     private HashMap<String, String> tables;
     private Constrainable           topConstrainable;
@@ -41,8 +42,9 @@ public class SqlQuery implements Querable {
         tables           = new HashMap<String, String>();
         orders           = new ArrayList<Orderable>();
         topConstrainable = null;
-        countParam       = alias;
-        selectParam      = alias;
+        countParam       = null;
+        selectParam      = null;
+        queryTableAlias  = alias;
 
         tables.put(alias, table);
     }
@@ -66,7 +68,9 @@ public class SqlQuery implements Querable {
     @Override
     public String count() {
 
-        return "SELECT COUNT(" + countParam + ") FROM " + generateSelectWoTable();
+        String countPart = countParam == null ? queryTableAlias + ".*" : countParam;
+
+        return "SELECT COUNT(" + countPart + ") FROM " + generateSelectWoTable();
     }
 
 
@@ -168,7 +172,9 @@ public class SqlQuery implements Querable {
     @Override
     public String select() {
 
-        return "SELECT " + selectParam + " FROM " + generateSelectWoTable() + generateOrders();
+        String selectPart = selectParam == null ? queryTableAlias + ".*" : selectParam;
+
+        return "SELECT " + selectPart + " FROM " + generateSelectWoTable() + generateOrders();
     }
 
 
