@@ -68,7 +68,7 @@ public class SqlQuery implements Querable {
     @Override
     public String count() {
 
-        String countPart = countParam == null ? queryTableAlias + ".*" : countParam;
+        String countPart = countParam == null ? "*" : countParam;
 
         return "SELECT COUNT(" + countPart + ") FROM " + generateSelectWoTable();
     }

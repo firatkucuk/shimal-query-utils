@@ -37,7 +37,7 @@ public class SqlQueryTest {
     public void testCountQuery() {
 
         SqlQuery sqlQuery = new SqlQuery("USERS");
-        String   expected = "SELECT COUNT(S.*) FROM USERS S";
+        String   expected = "SELECT COUNT(*) FROM USERS S";
 
         if (!expected.equals(sqlQuery.count())) {
             assert false;
