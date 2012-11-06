@@ -264,7 +264,7 @@ public class HqlQuery implements Querable {
 
         query = query.substring(2);
 
-        if (topConstrainable.size() > 0) {
+        if (topConstrainable != null && topConstrainable.size() > 0) {
             query += " where " + wh(topConstrainable);
         }
 
