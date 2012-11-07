@@ -289,7 +289,7 @@ public class HqlQuery implements Querable {
             } else if (constraint.getOperator() == HqlConstraint.NOT_EQUAL) {
                 query += constraint.getLeftSide() + " != " + constraint.getRightSide();
             } else if (constraint.getOperator() == HqlConstraint.LIKE) {
-                query += constraint.getLeftSide() + " LIKE " + constraint.getRightSide();
+                query += constraint.getLeftSide() + " like " + constraint.getRightSide();
             } else if (constraint.getOperator() == HqlConstraint.LIKE_LOWER) {
                 query += "lower(" + constraint.getLeftSide() + ") like lower('" + constraint.getRightSide() + "')";
             } else if (constraint.getOperator() == HqlConstraint.LESS_THAN) {
